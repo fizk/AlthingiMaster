@@ -19,7 +19,7 @@ services:
 
   api:
     build:
-      context: ../server
+      context: ./server
       dockerfile: Dockerfile
     volumes:
       - ./logs/:/var/www/data/log
@@ -102,8 +102,8 @@ services:
 
   graphql:
     build:
-      context: .
-      dockerfile: Dockerfile-node
+      context: ./client
+      dockerfile: Dockerfile
     environment:
       - GRAPHQL_SERVER=http://localhost:9090/graphql
       - CLIENT_HOST=api
