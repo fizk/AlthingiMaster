@@ -1,0 +1,162 @@
+version: '3'
+
+services:
+
+  master:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 9090:80
+    expose:
+      - 9090
+    volumes:
+      - ./client/public:/usr/local/apache2/htdocs
+    depends_on:
+      - graphql
+    links:
+      - graphql
+
+  api:
+    build:
+      context: ../server
+      dockerfile: Dockerfile
+    volumes:
+      - ./logs/:/var/www/data/log
+      - ./server:/var/www
+    depends_on:
+      - database
+      - search-api
+      - cache-api
+    links:
+      - database
+      - cache-api
+      - search-api
+    ports:
+      - 8080:80
+    environment:
+      - DB_HOST=database
+      - DB_PORT=3306
+      - DB_NAME=althingi
+      - DB_USER=root
+      - DB_PASSWORD=example
+
+      - CACHE_HOST=cache-api
+      - CACHE_PORT=6379
+      - CACHE_TYPE=memory
+
+      - SEARCH=elasticsearch
+
+      - ES_HOST=search-api
+      - ES_PROTO=http
+      - ES_PORT=9200
+      - ES_USER=elastic
+      - ES_PASSWORD=changeme
+
+      - LOG_PATH=/var/www/data/log/api.log
+      - LOG_FORMAT=logstash
+
+  search-api:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - ./data/search-api/:/usr/share/elasticsearch/data
+
+  database:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./server/auto/db/:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
+
+  database-test:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - ./assets/database/:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
+
+  cache-api:
+    image: redis:4.0.11
+    volumes:
+      - ./data/cache-api:/data
+
+  cache-consumer:
+    image: redis:4.0.11
+    volumes:
+      - ./data/cache-consumer:/data
+
+  cache-provider:
+    image: redis:4.0.11
+    volumes:
+      - ./data/cache-provider:/data
+
+  graphql:
+    build:
+      context: .
+      dockerfile: Dockerfile-node
+    environment:
+      - GRAPHQL_SERVER=http://localhost:9090/graphql
+      - CLIENT_HOST=api
+      - CLIENT_PORT=80
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    depends_on:
+      - api
+    links:
+      - api
+    volumes:
+      - ./client:/home/node/app
+    command: bash -c "node /home/node/app/dist/server/index.js"
+
+  aggregator:
+    build:
+      context: ../aggregator
+      dockerfile: Dockerfile
+    volumes:
+      - ./logs/:/usr/src/data/log/
+    environment:
+      - AGGREGATOR_CONSUMER=http://api:80
+
+      - PROVIDER_CACHE_TYPE=memory # memory | file | none
+      - PROVIDER_CACHE=true # true | false
+      - PROVIDER_CACHE_HOST=cache-provider
+      - PROVIDER_CACHE_PORT=6379
+
+      - CONSUMER_CACHE_TYPE=memory # memory | file | none
+      - CONSUMER_CACHE=false # true # true | false
+      - CONSUMER_CACHE_HOST=cache-consumer
+      - CONSUMER_CACHE_PORT=6379
+
+      - LOG_PATH=/usr/src/data/log/aggregator.log
+      - LOG_FORMAT=logstash
+    depends_on:
+      - api
+      - cache-consumer
+      - cache-provider
+    links:
+      - api
+      - cache-consumer
+      - cache-provider
+    # command: bash -c "php ./index.php load:assembly && php ./index.php load:party && php ./index.php load:constituency && php ./index.php load:committee && php ./index.php load:category && php ./index.php load:congressman && php ./index.php load:president"
+    # command: bash -c "php ./index.php load:congressman --assembly=148 && php ./index.php load:plenary --assembly=148 && php ./index.php load:issue --assembly=148 && php ./index.php load:committee-assembly --assembly=148"
+    command: bash -c "./assembly.sh 148"
+
+  elk:
+    image: sebp/elk
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+
