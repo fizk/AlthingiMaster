@@ -24,6 +24,7 @@ services:
     volumes:
       - ./logs/:/var/www/data/log
       - ./server:/var/www
+      - /var/www/vendor # https://blog.codeship.com/using-docker-compose-for-php-development/
     depends_on:
       - database
       - search-api
@@ -34,6 +35,8 @@ services:
       - search-api
     ports:
       - 8080:80
+    expose:
+      - 8080
     environment:
       - DB_HOST=database
       - DB_PORT=3306
@@ -55,6 +58,7 @@ services:
 
       - LOG_PATH=/var/www/data/log/api.log
       - LOG_FORMAT=logstash
+    # command: bash -c "/usr/local/bin/composer install && /usr/local/bin/composer dump-autoload -o"
 
   search-api:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
@@ -73,15 +77,6 @@ services:
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./server/auto/db/:/docker-entrypoint-initdb.d
-    environment:
-      - MYSQL_ROOT_PASSWORD=example
-
-  database-test:
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    volumes:
-      - ./assets/database/:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=example
 
@@ -119,10 +114,11 @@ services:
     volumes:
       - ./client:/home/node/app
     command: bash -c "node /home/node/app/dist/server/index.js"
+    # command: bash -c "npm i && npm run build:server && npm run build:client && node /home/node/app/dist/server/index.js"
 
   aggregator:
     build:
-      context: ../aggregator
+      context: ./aggregator
       dockerfile: Dockerfile
     volumes:
       - ./logs/:/usr/src/data/log/
@@ -152,11 +148,4 @@ services:
     # command: bash -c "php ./index.php load:assembly && php ./index.php load:party && php ./index.php load:constituency && php ./index.php load:committee && php ./index.php load:category && php ./index.php load:congressman && php ./index.php load:president"
     # command: bash -c "php ./index.php load:congressman --assembly=148 && php ./index.php load:plenary --assembly=148 && php ./index.php load:issue --assembly=148 && php ./index.php load:committee-assembly --assembly=148"
     command: bash -c "./assembly.sh 148"
-
-  elk:
-    image: sebp/elk
-    ports:
-      - "5601:5601"
-      - "9200:9200"
-      - "5044:5044"
 
