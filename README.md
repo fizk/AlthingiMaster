@@ -31,3 +31,20 @@ $ docker-compose up master
 ```
 
 for individual services, see docker-compose file.
+
+
+## Useful commands
+
+Get into a running `aggregator`
+```
+$ docker-compose run aggregator bash
+```
+from there you can `cd` into `usr/src/auto` to run the scripts
+
+
+Clear the Redis cache
+```
+$ docker exec -it <CONTAINER ID> /bin/bash
+redis-cli
+flushall
+```
