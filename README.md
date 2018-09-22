@@ -35,11 +35,19 @@ for individual services, see docker-compose file.
 
 ## Useful commands
 
+### Aggregator
+
 Get into a running `aggregator`
 ```
 $ docker-compose run aggregator bash
 ```
 from there you can `cd` into `usr/src/auto` to run the scripts
+
+...or just run it in one command
+```
+$ docker-compose run  aggregator /usr/src/auto/globals.sh
+$ docker-compose run -d --rm aggregator /usr/src/auto/assembly.sh 147
+```
 
 
 Clear the Redis cache
@@ -47,4 +55,11 @@ Clear the Redis cache
 $ docker exec -it <CONTAINER ID> /bin/bash
 redis-cli
 flushall
+```
+
+### API
+
+Re-index all speeches (ElasticSearch)
+```
+$ docker-compose run -d --rm api /var/www/auto/index-speeches.sh
 ```
