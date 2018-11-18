@@ -13,9 +13,11 @@ services:
       - 80
     volumes:
       - ./static:/usr/local/apache2/htdocs
+      - ./logs:/var/logs
     depends_on:
       - graphql
       - image-server
+      - log-server
     links:
       - graphql
 
@@ -60,7 +62,7 @@ services:
       - ES_PASSWORD=changeme
 
       - LOG_PATH=/var/www/data/log/api.log
-      - LOG_FORMAT=logstash
+      - LOG_FORMAT=line
 
   search-api:
     container_name: search-api
@@ -82,18 +84,30 @@ services:
       - ./data/mysql:/var/lib/mysql
       - ./server/auto/db/:/docker-entrypoint-initdb.d
       - ./server/assets/database/:/home
+      - ./assets/database:/etc/mysql/conf.d
+      - ./logs/:/var/log/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=example
 
   cache-api:
     container_name: cache-api
     image: redis:4.0.11
+    # ports:
+    #   - 6379:6379
+    #   - 63791:6379
+    # expose:
+    #   - 63791
     volumes:
       - ./data/cache-api:/data
 
   cache-consumer:
     container_name: cache-concumer
     image: redis:4.0.11
+    # ports:
+    #   - 6379:6379
+    #   - 63792:6379
+    # expose:
+    #   - 63792
     volumes:
       - ./data/cache-consumer:/data
 
@@ -142,12 +156,12 @@ services:
       - PROVIDER_CACHE_PORT=6379
 
       - CONSUMER_CACHE_TYPE=memory # memory | file | none
-      - CONSUMER_CACHE=false # true # true | false
+      - CONSUMER_CACHE=true # true # true | false
       - CONSUMER_CACHE_HOST=cache-consumer
       - CONSUMER_CACHE_PORT=6379
 
       - LOG_PATH=/usr/src/data/log/aggregator.log
-      - LOG_FORMAT=logstash
+      - LOG_FORMAT=line
     depends_on:
       - api
       - cache-consumer
@@ -156,8 +170,6 @@ services:
       - api
       - cache-consumer
       - cache-provider
-    # command: bash -c "php ./index.php load:assembly && php ./index.php load:party && php ./index.php load:constituency && php ./index.php load:committee && php ./index.php load:category && php ./index.php load:congressman && php ./index.php load:president"
-    # command: bash -c "php ./index.php load:congressman --assembly=148 && php ./index.php load:plenary --assembly=148 && php ./index.php load:issue --assembly=148 && php ./index.php load:committee-assembly --assembly=148"
     command: bash -c "./assembly.sh 148"
 
   image-server:
@@ -169,4 +181,19 @@ services:
       - DETECTORS=['thumbor.detectors.face_detector','thumbor.detectors.feature_detector']
     volumes:
       - ./data/thumbor:/data
+
+  log-server:
+    container_name: log-server
+    build:
+      context: ./log-server
+      dockerfile: Dockerfile
+    ports:
+      - "5601:5601"
+      - "9000:9200"
+      - "5044:5044"
+    environment:
+      - MAX_MAP_COUNT=300000
+    volumes:
+      - ./logs/:/home/
+      - ./data/elk-data:/var/lib/elasticsearch
 

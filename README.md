@@ -63,3 +63,8 @@ Re-index all speeches (ElasticSearch)
 ```
 $ docker-compose run -d --rm api /var/www/auto/index-speeches.sh
 ```
+
+
+
+https://qbox.io/blog/author/vineeth-mohan?utm_source=qbox.io&utm_medium=article&utm_campaign=migrating-mysql-data-into-elasticsearch-using-logstash
+
