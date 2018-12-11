@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 
 services:
 
@@ -80,6 +80,10 @@ services:
     image: mysql:5.6.41
     restart: always
     command: --default-authentication-plugin=mysql_native_password
+    # ports:
+    #   - 3306:3306
+    # expose:
+    #   - 3306
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./server/auto/db/:/docker-entrypoint-initdb.d
@@ -140,6 +144,32 @@ services:
     links:
       - api
 
+  graphql-dev:
+    container_name: graphql-dev
+    restart: always
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        - GRAPHQL_SERVER=/graphql
+    environment:
+      - CLIENT_HOST=api
+      - CLIENT_PORT=80
+      - IMAGE_SERVER=/images
+    command: npm run dev
+    volumes:
+      - ./logs/:/home/node/app/logs
+      - ./client/src/:/home/node/app/src
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    depends_on:
+      - api
+    links:
+      - api
+
+
   aggregator:
     container_name: aggregator
     build:
@@ -191,8 +221,6 @@ services:
       - "5601:5601"
       - "9000:9200"
       - "5044:5044"
-    environment:
-      - MAX_MAP_COUNT=300000
     volumes:
       - ./logs/:/home/
       - ./data/elk-data:/var/lib/elasticsearch

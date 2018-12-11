@@ -18,6 +18,8 @@ WORKDIR ${ES_HOME}
 RUN CONF_DIR=/etc/elasticsearch gosu elasticsearch bin/elasticsearch-plugin \
     install -b ingest-geoip
 
+RUN echo "vm.max_map_count=262144" >> /etc/sysctl.conf
+
 # Installing Logstash plugins
 WORKDIR ${LOGSTASH_HOME}
 RUN gosu logstash bin/logstash-plugin install logstash-filter-bytes
