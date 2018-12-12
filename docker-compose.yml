@@ -160,6 +160,7 @@ services:
     volumes:
       - ./logs/:/home/node/app/logs
       - ./client/src/:/home/node/app/src
+      - ./client/@types/:/home/node/app/@types
     ports:
       - 3000:3000
     expose:
