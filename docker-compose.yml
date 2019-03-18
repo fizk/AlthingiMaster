@@ -28,16 +28,24 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./logs/:/var/www/data/log
-      - ./server:/var/www
-      - /var/www/vendor # https://blog.codeship.com/using-docker-compose-for-php-development/
+      - ./server/auto/:/var/www/auto
+      - ./server/config/:/var/www/config
+      - ./server/module/:/var/www/module
+      - ./server/public/:/var/www/public
     depends_on:
       - database
       - search-api
       - cache-api
+      - queue
+      - accumulator
+      - acc-database
     links:
       - database
       - cache-api
       - search-api
+      - queue
+      - accumulator
+      - acc-database
     ports:
       - 8080:80
     expose:
@@ -64,6 +72,14 @@ services:
       - LOG_PATH=/var/www/data/log/api.log
       - LOG_FORMAT=line
 
+      - QUEUE=RabbitMQ
+      - QUEUE_HOST=queue
+      - QUEUE_PORT=5672
+      - QUEUE_USER=admin
+      - QUEUE_PASSWORD=Admin@123
+      - QUEUE_VHOST=/
+      - QUEUE_FORCED=true
+
   search-api:
     container_name: search-api
     image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
@@ -81,9 +97,9 @@ services:
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     # ports:
-    #   - 3306:3306
+    #   - 4406:3306
     # expose:
-    #   - 3306
+    #   - 4406
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./server/auto/db/:/docker-entrypoint-initdb.d
@@ -170,13 +186,16 @@ services:
     links:
       - api
 
-
   aggregator:
     container_name: aggregator
     build:
       context: ./aggregator
       dockerfile: Dockerfile
     volumes:
+      - ./aggregator/auto/:/usr/src/auto
+      - ./aggregator/config/:/usr/src/config
+      - ./aggregator/module/:/usr/src/module
+      - ./aggregator/public/:/usr/src/public
       - ./logs/:/usr/src/data/log/
     environment:
       - AGGREGATOR_CONSUMER=http://api:80
@@ -226,3 +245,58 @@ services:
       - ./logs/:/home/
       - ./data/elk-data:/var/lib/elasticsearch
 
+  queue:
+    container_name: queue
+    image: rabbitmq:3.7.13-rc.2-management
+    hostname: rabbit1
+    environment:
+      - RABBITMQ_ERLANG_COOKIE="jasdfg87asdv8cxv6DUv"
+      - RABBITMQ_NODENAME=rabbit1
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=Admin@123
+    ports:
+      # - 4369:4369
+      # - 5671:5671
+      - 5672:5672
+      # - 15671:15671
+      - 15672:15672
+      # - 25672:25672
+    volumes:
+      - ./accumulator/assets/definitions.json:/etc/rabbitmq/definitions.json
+
+  acc-database:
+    container_name: accumulator-database
+    image: mongo:3.4.19-jessie
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/acc-mongo:/data/db
+      - ./assets:/home
+
+  accumulator:
+    container_name: accumulator
+    build:
+      context: ./accumulator
+      dockerfile: Dockerfile
+    environment:
+      - STORE_HOST=acc-database
+      - QUEUE_HOST=queue
+      - QUEUE_USER=admin
+      - QUEUE_PASSWORD=Admin@123
+      - API_HOST=api
+      - API_PORT=80
+    restart: on-failure
+    volumes:
+      - ./accumulator/src:/usr/src/app/src
+      - ./accumulator/@types:/usr/src/app/@types
+    depends_on:
+      - database
+      - search-api
+      - acc-database
+      - queue
+    links:
+      - database
+      - search-api
+      - acc-database
+      - queue
+    command: bash -c "./wait-for-it.sh queue:5672 -t 80 -- echo \"RabbitMQ up\" && npm run tsc && ./node_modules/.bin/forever ./dist/index.js"

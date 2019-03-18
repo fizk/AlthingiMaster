@@ -143,6 +143,7 @@ fabric.properties
 aggregator
 client
 server
+accumulator
 data/*
 !data/.gitkeep
 logs/*

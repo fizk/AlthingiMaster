@@ -68,3 +68,7 @@ $ docker-compose run -d --rm api /var/www/auto/index-speeches.sh
 
 https://qbox.io/blog/author/vineeth-mohan?utm_source=qbox.io&utm_medium=article&utm_campaign=migrating-mysql-data-into-elasticsearch-using-logstash
 
+
+https://github.com/oprearocks/RabbitMQ-Docker-cluster
+https://www.youtube.com/watch?v=w2kGd2VRJWE
+https://mindbyte.nl/2018/04/05/run-rabbitmq-using-docker-compose-with-guest-user.html
