@@ -6,6 +6,8 @@ as listed below:
 ```
 root
 |
++ - accumulator [simlink]
+|
 + - aggregator [simlink]
 |
 + - assets
@@ -16,12 +18,16 @@ root
 |
 + - logs
 |
++ - log-server
+|
 + - server [simlink]
 | 
 + - docker-compose.yml
 | 
 ` - Dockerfile
 ```
+
+![althingi-schema 2 0](https://user-images.githubusercontent.com/386336/54566370-c53e8e00-4a24-11e9-99e7-8cedad9113b2.png)
 
 
 To get everything up and running
