@@ -17,7 +17,7 @@ services:
     depends_on:
       - graphql
       - image-server
-      - log-server
+      # - log-server
     links:
       - graphql
 
@@ -59,7 +59,8 @@ services:
 
       - CACHE_HOST=cache-api
       - CACHE_PORT=6379
-      - CACHE_TYPE=memory
+      - CACHE_TYPE=none
+      # - CACHE_TYPE=memory
 
       - SEARCH=elasticsearch
 
@@ -72,13 +73,16 @@ services:
       - LOG_PATH=/var/www/data/log/api.log
       - LOG_FORMAT=line
 
-      - QUEUE=RabbitMQ
+      # - QUEUE=RabbitMQ
+      - QUEUE=none
       - QUEUE_HOST=queue
       - QUEUE_PORT=5672
       - QUEUE_USER=admin
       - QUEUE_PASSWORD=Admin@123
       - QUEUE_VHOST=/
       - QUEUE_FORCED=true
+
+      - STORAGE_HOST=acc-database
 
   search-api:
     container_name: search-api
@@ -96,10 +100,10 @@ services:
     image: mysql:5.6.41
     restart: always
     command: --default-authentication-plugin=mysql_native_password
-    # ports:
-    #   - 4406:3306
-    # expose:
-    #   - 4406
+    ports:
+      - 4406:3306
+    expose:
+      - 4406
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./server/auto/db/:/docker-entrypoint-initdb.d
@@ -205,7 +209,8 @@ services:
       - PROVIDER_CACHE_HOST=cache-provider
       - PROVIDER_CACHE_PORT=6379
 
-      - CONSUMER_CACHE_TYPE=memory # memory | file | none
+      # - CONSUMER_CACHE_TYPE=memory # memory | file | none
+      - CONSUMER_CACHE_TYPE=none
       - CONSUMER_CACHE=true # true # true | false
       - CONSUMER_CACHE_HOST=cache-consumer
       - CONSUMER_CACHE_PORT=6379
