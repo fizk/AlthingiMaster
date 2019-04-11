@@ -1,4 +1,4 @@
-FROM httpd:2.4
+FROM httpd:2.4.39
 
 RUN apt-get update \
  && apt-get install -y  vim
