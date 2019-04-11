@@ -1,70 +1,82 @@
-# althingi master
+# Althingi Master
 
-The sub projects need to be sim-linked into the root of this directory
-as listed below:
+Maybe not the best way of doing things, but it does the job.
+The purpose of this repo is to pull all the different micro-services to gether and provide one `docker-compose.yml` file that can start the whole system in production mode.
+
+The sub-systems are:
+* https://github.com/fizk/AlthingiAggregator
+* https://github.com/fizk/AlthingiQL
+* https://github.com/fizk/Loggjafarthing
+* https://github.com/fizk/AlthingiAccumulator
+
+Each repo is responsible for their own `Dockerfile`, but this repo provides a `docker-compose.yml` that ties the all together.
+
+## Setup.
+Either clone each of the sub-system into theyr own directory and sim-link into the root of this repo or clone directly into the root. The names (directory names) of the sub-systems are importand and need to be as follow:
 
 ```
 root
 |
-+ - aggregator [simlink]
++ - accumulator [simlink] or [git clone https://github.com/fizk/AlthingiAccumulator accumulator]
+|
++ - aggregator [simlink] or [git clone https://github.com/fizk/AlthingiAggregator aggregator]
 |
 + - assets
 | 
-+ - client [simlink]
++ - client [simlink] or [git clone https://github.com/fizk/AlthingiQL client]
 |
 + - data
 |
 + - logs
 |
-+ - server [simlink]
++ - log-server
+|
++ - server [simlink] or [git clone https://github.com/fizk/Loggjafarthing server]
 | 
 + - docker-compose.yml
 | 
 ` - Dockerfile
 ```
 
+The hole systems looks like this:
+![althingi-schema 2 0](https://user-images.githubusercontent.com/386336/54566370-c53e8e00-4a24-11e9-99e7-8cedad9113b2.png)
 
+## Run
 To get everything up and running
 
 ```bash
-$ docker-compose up master
+$ docker-compose up -d master
 ```
 
-for individual services, see docker-compose file.
+For individual services, see docker-compose file. Example: To run pnly the API (and all system dependant), run 
+```bash
+$ docker-compose up -d api
+```
 
+## Logging.
+If run in _deamon_ mode, one can monitor `stdout` via docker-compose logs
+```bash
+$ docker-compose logs -tf --tail="all" api graphql aggregator accumulator
+```
+...or any combination of systems you want to monitor.
 
 ## Useful commands
 
 ### Aggregator
+The Aggregator is run as a one off command. Have a look at [available scripts to run](https://github.com/fizk/AlthingiAggregator/tree/master/auto).
 
-Get into a running `aggregator`
 ```
-$ docker-compose run aggregator bash
-```
-from there you can `cd` into `usr/src/auto` to run the scripts
-
-...or just run it in one command
-```
-$ docker-compose run  aggregator /usr/src/auto/globals.sh
-$ docker-compose run -d --rm aggregator /usr/src/auto/assembly.sh 147
+$ docker-compose run -d aggregator /usr/src/auto/globals.sh
+$ docker-compose run -d aggregator /usr/src/auto/assembly.sh 147
 ```
 
+Sometimes it is desirable to clear the consumer/provider cache assosiated with the Aggregator. For that we have to get into the running cache Docker container and flush the cache. Find the `CONTAINER ID` by running `docker ps -a`, the go into the container and clear the cache
 
-Clear the Redis cache
 ```
 $ docker exec -it <CONTAINER ID> /bin/bash
 redis-cli
 flushall
 ```
-
-### API
-
-Re-index all speeches (ElasticSearch)
-```
-$ docker-compose run -d --rm api /var/www/auto/index-speeches.sh
-```
-
-
 
 https://qbox.io/blog/author/vineeth-mohan?utm_source=qbox.io&utm_medium=article&utm_campaign=migrating-mysql-data-into-elasticsearch-using-logstash
 
