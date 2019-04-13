@@ -17,9 +17,14 @@ services:
     depends_on:
       - graphql
       - image-server
-      # - log-server
+      - logstash
     links:
       - graphql
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://127.0.0.1:12201
+        tag: "apache"
 
   api:
     container_name: api
@@ -59,8 +64,8 @@ services:
 
       - CACHE_HOST=cache-api
       - CACHE_PORT=6379
-      - CACHE_TYPE=none
-      # - CACHE_TYPE=memory
+      # - CACHE_TYPE=none
+      - CACHE_TYPE=memory
 
       - SEARCH=elasticsearch
 
@@ -70,7 +75,8 @@ services:
       - ES_USER=elastic
       - ES_PASSWORD=changeme
 
-      - LOG_PATH=/var/www/data/log/api.log
+      # - LOG_PATH=/var/www/data/log/api.log
+      - LOG_PATH=php://stdout
       - LOG_FORMAT=line
 
       # - QUEUE=RabbitMQ
@@ -83,6 +89,11 @@ services:
       - QUEUE_FORCED=true
 
       - STORAGE_HOST=acc-database
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://127.0.0.1:12201
+        tag: "api"
 
   search-api:
     container_name: search-api
@@ -112,6 +123,11 @@ services:
       - ./logs/:/var/log/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=example
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://127.0.0.1:12201
+        tag: "mysql"
 
   cache-api:
     container_name: cache-api
@@ -163,6 +179,11 @@ services:
       - api
     links:
       - api
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://127.0.0.1:12201
+        tag: "graphql"
 
   graphql-dev:
     container_name: graphql-dev
@@ -209,13 +230,14 @@ services:
       - PROVIDER_CACHE_HOST=cache-provider
       - PROVIDER_CACHE_PORT=6379
 
-      # - CONSUMER_CACHE_TYPE=memory # memory | file | none
-      - CONSUMER_CACHE_TYPE=none
+      - CONSUMER_CACHE_TYPE=memory # memory | file | none
+      # - CONSUMER_CACHE_TYPE=none
       - CONSUMER_CACHE=true # true # true | false
       - CONSUMER_CACHE_HOST=cache-consumer
       - CONSUMER_CACHE_PORT=6379
 
-      - LOG_PATH=/usr/src/data/log/aggregator.log
+      # - LOG_PATH=/usr/src/data/log/aggregator.log
+      - LOG_PATH=php://stdout
       - LOG_FORMAT=line
     depends_on:
       - api
@@ -225,7 +247,11 @@ services:
       - api
       - cache-consumer
       - cache-provider
-    command: bash -c "./assembly.sh 148"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://127.0.0.1:12201
+        tag: "aggregator"
 
   image-server:
     container_name: images
@@ -237,18 +263,30 @@ services:
     volumes:
       - ./data/thumbor:/data
 
-  log-server:
-    container_name: log-server
+  kibana:
+    container_name: kibana
+    image: kibana:6.7.0
+    links:
+      - elasticsearch
+    ports:
+      - '5601:5601'
+
+  logstash:
+    container_name: logstash
     build:
       context: ./log-server
       dockerfile: Dockerfile
     ports:
-      - "5601:5601"
-      - "9000:9200"
-      - "5044:5044"
-    volumes:
-      - ./logs/:/home/
-      - ./data/elk-data:/var/lib/elasticsearch
+      - "127.0.0.1:12201:12201/udp"
+    links:
+      - elasticsearch
+    depends_on:
+      - kibana
+      - elasticsearch
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: elasticsearch:6.7.0
 
   queue:
     container_name: queue

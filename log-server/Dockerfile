@@ -1,27 +1,15 @@
-FROM sebp/elk:642
+FROM logstash:6.7.0
 
-# overwrite existing file
-ADD ./pipelines/30-output.conf /etc/logstash/conf.d/30-output.conf
+# Remove default pipeline
+RUN rm -f /usr/share/logstash/pipeline/logstash.conf
 
-# add new file
-ADD ./pipelines/aggregator-pipeline.conf /etc/logstash/conf.d/aggregator-pipeline.conf
-ADD ./pipelines/apache-pipeline.conf /etc/logstash/conf.d/apache-pipeline.conf
-ADD ./pipelines/api-pipeline.conf /etc/logstash/conf.d/api-pipeline.conf
-ADD ./pipelines/graphql-pipeline.conf /etc/logstash/conf.d/graphql-pipeline.conf
-ADD ./pipelines/mysql-pipeline.conf /etc/logstash/conf.d/mysql-pipeline.conf
+# Add custom GROK patterns
 ADD ./patterns/custom-patterns /etc/logstash/conf.d/patterns/custom-patterns
 
-# Installing Elasticsearch plugins
-ENV ES_HOME /opt/elasticsearch
-WORKDIR ${ES_HOME}
-
-RUN CONF_DIR=/etc/elasticsearch gosu elasticsearch bin/elasticsearch-plugin \
-    install -b ingest-geoip
-
-RUN echo "vm.max_map_count=262144" >> /etc/sysctl.conf
+# Add new pipelines
+ADD ./pipelines/combined.conf /usr/share/logstash/pipeline/combined.conf
 
 # Installing Logstash plugins
-WORKDIR ${LOGSTASH_HOME}
-RUN gosu logstash bin/logstash-plugin install logstash-filter-bytes
-RUN gosu logstash bin/logstash-plugin install logstash-filter-multiline
-RUN gosu logstash bin/logstash-plugin install logstash-filter-json_encode
+RUN logstash-plugin install logstash-filter-bytes
+RUN logstash-plugin install logstash-filter-multiline
+RUN logstash-plugin install logstash-filter-json_encode
