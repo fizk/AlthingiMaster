@@ -4,7 +4,8 @@ https://elk-docker.readthedocs.io/#troubleshooting
 GET /_cat/indices
 GET _template
 
-PUT _template/aggregator1
+DELETE _template/aggregator1
+PUT _template/aggregator1?include_type_name=true
 {
     "mappings": {
         "doc": {
@@ -28,10 +29,15 @@ PUT _template/aggregator1
                     "type": "keyword"
                 },
                 "memory": {
-                    "type": "long"
-                },
-                "memory_peak": {
-                    "type": "long"
+                  "type" : "object",
+                  "properties": {
+                    "peak": {
+                      "type": "long"
+                    },
+                    "usage": {
+                      "type": "long"
+                    }
+                  }
                 },
                 "path": {
                     "type": "text"
@@ -44,15 +50,17 @@ PUT _template/aggregator1
                 }
             }
         }
+
     },
     "settings": {
         "index.refresh_interval": "5s"
     },
-    "index_patterns": "aggregator-*",
-    "version": 50001
+    "index_patterns": "aggregator-*"
+
 }
 
-PUT _template/mysql1
+DELETE _template/mysql1
+PUT _template/mysql1?include_type_name=true
 {
     "mappings": {
         "doc": {
@@ -84,11 +92,11 @@ PUT _template/mysql1
     "settings": {
         "index.refresh_interval": "5s"
     },
-    "index_patterns": "mysql-*",
-    "version": 50001
+    "index_patterns": "mysql-*"
 }
 
-PUT _template/graphql1
+DELETE _template/graphql1
+PUT _template/graphql1?include_type_name=true
 {
     "mappings": {
         "doc": {
@@ -99,7 +107,7 @@ PUT _template/graphql1
                 "@version": {
                     "type": "keyword"
                 },
-                "time": {
+                "requestTime": {
                     "type": "double"
                 },
                 "cache": {
@@ -145,9 +153,9 @@ PUT _template/graphql1
                         },
                         "heapUsed": {
                           "type": "long"
-                        }  
+                        }
                     }
-                    
+
                 }
             }
         }
@@ -155,11 +163,11 @@ PUT _template/graphql1
     "settings": {
         "index.refresh_interval": "5s"
     },
-    "index_patterns": "graphql-*",
-    "version": 50001
+    "index_patterns": "graphql-*"
 }
 
-PUT _template/apache1
+DELETE _template/apache1
+PUT _template/apache1?include_type_name=true
 {
     "mappings": {
         "doc": {
@@ -236,11 +244,11 @@ PUT _template/apache1
     "settings": {
         "index.refresh_interval": "5s"
     },
-    "index_patterns": "apache-*",
-    "version": 50001
+    "index_patterns": "apache-*"
 }
 
-PUT _template/api1
+DELETE _template/api1
+PUT _template/api1?include_type_name=true
 {
     "mappings": {
         "doc": {
@@ -252,10 +260,15 @@ PUT _template/api1
                     "type": "keyword"
                 },
                 "memory": {
-                    "type": "long"
-                },
-                "memory_peak": {
-                    "type": "long"
+                  "type" : "object",
+                  "properties": {
+                    "peak": {
+                      "type": "long"
+                    },
+                    "usage": {
+                      "type": "long"
+                    }
+                  }
                 },
                 "action": {
                     "type": "text"
@@ -281,7 +294,6 @@ PUT _template/api1
     "settings": {
         "index.refresh_interval": "5s"
     },
-    "index_patterns": "api-*",
-    "version": 50001
+    "index_patterns": "api-*"
 }
 ```
