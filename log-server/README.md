@@ -2,10 +2,10 @@ https://elk-docker.readthedocs.io/#troubleshooting
 
 ```
 GET /_cat/indices
-GET _template
+GET _template/template_*
 
-DELETE _template/aggregator1
-PUT _template/aggregator1?include_type_name=true
+DELETE _template/template_aggregator
+PUT _template/template_aggregator?include_type_name=true
 {
     "mappings": {
         "doc": {
@@ -59,8 +59,8 @@ PUT _template/aggregator1?include_type_name=true
 
 }
 
-DELETE _template/mysql1
-PUT _template/mysql1?include_type_name=true
+DELETE _template/template_mysql
+PUT _template/template_mysql?include_type_name=true
 {
     "mappings": {
         "doc": {
@@ -95,8 +95,8 @@ PUT _template/mysql1?include_type_name=true
     "index_patterns": "mysql-*"
 }
 
-DELETE _template/graphql1
-PUT _template/graphql1?include_type_name=true
+DELETE _template/template_graphql
+PUT _template/template_graphql?include_type_name=true
 {
     "mappings": {
         "doc": {
@@ -166,8 +166,8 @@ PUT _template/graphql1?include_type_name=true
     "index_patterns": "graphql-*"
 }
 
-DELETE _template/apache1
-PUT _template/apache1?include_type_name=true
+DELETE _template/template_apache
+PUT _template/template_apache?include_type_name=true
 {
     "mappings": {
         "doc": {
@@ -247,8 +247,8 @@ PUT _template/apache1?include_type_name=true
     "index_patterns": "apache-*"
 }
 
-DELETE _template/api1
-PUT _template/api1?include_type_name=true
+DELETE _template/template_api
+PUT _template/template_api?include_type_name=true
 {
     "mappings": {
         "doc": {
@@ -295,5 +295,50 @@ PUT _template/api1?include_type_name=true
         "index.refresh_interval": "5s"
     },
     "index_patterns": "api-*"
+}
+
+DELETE _template/template_indexer
+PUT _template/template_indexer?include_type_name=true
+{
+    "mappings": {
+        "doc": {
+            "properties": {
+                "@timestamp": {
+                    "type": "date"
+                },
+                "@version": {
+                    "type": "keyword"
+                },
+                "id": {
+                    "type": "text"
+                },
+                "result": {
+                    "type": "text"
+                },
+                "index": {
+                    "type": "text"
+                },
+                "warnings": {
+                    "type": "text"
+                },
+                "queue": {
+                    "type": "keyword"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "text"
+                },
+                "time": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "settings": {
+        "index.refresh_interval": "5s"
+    },
+    "index_patterns": "indexer-*"
 }
 ```
