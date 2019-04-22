@@ -8,6 +8,7 @@ The sub-systems are:
 * https://github.com/fizk/AlthingiQL
 * https://github.com/fizk/Loggjafarthing
 * https://github.com/fizk/AlthingiAccumulator
+* https://github.com/fizk/AlthingiSearchIndexer
 
 Each repo is responsible for their own `Dockerfile`, but this repo provides a `docker-compose.yml` that ties the all together.
 
@@ -20,6 +21,7 @@ root
 + - accumulator [simlink] or [git clone https://github.com/fizk/AlthingiAccumulator accumulator]
 |
 + - aggregator [simlink] or [git clone https://github.com/fizk/AlthingiAggregator aggregator]
++ - indexer [git clone https://github.com/fizk/AlthingiSearchIndexer indexer]
 |
 + - assets
 | 
