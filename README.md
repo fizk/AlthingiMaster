@@ -21,6 +21,7 @@ root
 + - accumulator [simlink] or [git clone https://github.com/fizk/AlthingiAccumulator accumulator]
 |
 + - aggregator [simlink] or [git clone https://github.com/fizk/AlthingiAggregator aggregator]
+|
 + - indexer [git clone https://github.com/fizk/AlthingiSearchIndexer indexer]
 |
 + - assets
