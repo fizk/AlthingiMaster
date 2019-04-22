@@ -39,7 +39,7 @@ root
 ```
 
 The hole systems looks like this:
-![althingi-schema 2 0](https://user-images.githubusercontent.com/386336/54566370-c53e8e00-4a24-11e9-99e7-8cedad9113b2.png)
+![althingi-schema 2 0](https://user-images.githubusercontent.com/386336/56483409-2c140300-650d-11e9-8f25-b5f65d2e0fd4.png)
 
 ## Run
 To get everything up and running
