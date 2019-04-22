@@ -122,7 +122,7 @@ services:
       - ./server/auto/db/:/docker-entrypoint-initdb.d
       - ./server/assets/database/:/home
       - ./assets/database:/etc/mysql/conf.d
-      # - ./logs/:/var/log/mysql
+      - ./logs/:/var/log/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=example
     logging:
@@ -361,4 +361,4 @@ services:
       - 15672:15672
       - 25672:25672
     volumes:
-      - ./accumulator/assets/definitions.json:/etc/rabbitmq/definitions.json
+      - ./assets/queue/definitions.json:/etc/rabbitmq/definitions.json
