@@ -341,4 +341,54 @@ PUT _template/template_indexer?include_type_name=true
     },
     "index_patterns": "indexer-*"
 }
+
+DELETE _template/template_aggregator
+PUT _template/template_aggregator?include_type_name=true
+{
+    "index_patterns" : "accumulator-*",
+    "settings" : {
+      "index" : {
+        "refresh_interval" : "5s"
+      }
+    },
+    "mappings" : {
+      "aggregator": {
+      "properties" : {
+        "path" : {
+          "type" : "text"
+        },
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "code" : {
+          "type" : "integer"
+        },
+        "queue" : {
+          "type" : "keyword"
+        },
+        "level" : {
+          "type" : "integer"
+        },
+        "log_level" : {
+          "type" : "keyword"
+        },
+        "payload" : {
+          "type" : "text"
+        },
+        "@version" : {
+          "type" : "keyword"
+        },
+        "host" : {
+          "type" : "keyword"
+        },
+        "action" : {
+          "type" : "keyword"
+        },
+        "type" : {
+          "type" : "keyword"
+        }
+      }
+    }
+    }
+}
 ```

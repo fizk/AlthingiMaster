@@ -39,19 +39,19 @@ services:
       - ./server/public/:/var/www/public
     depends_on:
       - database
-      - search-api
+      # - search-api
       - cache-api
       - queue
       - accumulator
-      - indexer
+      # - indexer
       - acc-database
     links:
       - database
+      # - search-api
       - cache-api
-      - search-api
       - queue
       - accumulator
-      - indexer
+      # - indexer
       - acc-database
     ports:
       - 8080:80
@@ -69,7 +69,8 @@ services:
       # - CACHE_TYPE=none
       - CACHE_TYPE=memory
 
-      - SEARCH=elasticsearch
+      # - SEARCH=elasticsearch
+      - SEARCH=none
 
       - ES_HOST=search-api
       - ES_PROTO=http
@@ -231,7 +232,8 @@ services:
 
   image-server:
     container_name: images
-    image: apsl/thumbor:6.4.2-simd-avx2
+    # image: apsl/thumbor:6.4.2-simd-avx2
+    image: apsl/thumbor
     ports:
       - 8000:8000
     environment:
@@ -303,11 +305,9 @@ services:
       - ./accumulator/src:/usr/src/app/src
       - ./accumulator/@types:/usr/src/app/@types
     depends_on:
-      - database
       - acc-database
       - queue
     links:
-      - database
       - acc-database
       - queue
     command: bash -c "./wait-for-it.sh queue:5672 -t 80 -- echo \"RabbitMQ up\" && npm run tsc && ./node_modules/.bin/forever ./dist/index.js"
@@ -362,3 +362,6 @@ services:
       - 25672:25672
     volumes:
       - ./assets/queue/definitions.json:/etc/rabbitmq/definitions.json
+
+
+
