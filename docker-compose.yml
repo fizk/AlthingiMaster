@@ -92,6 +92,10 @@ services:
       - QUEUE_FORCED=true
 
       - STORAGE_HOST=acc-database
+      - STORAGE_DB=althingi
+      - STORAGE_PORT=27017
+      - STORAGE_USER=ro
+      - STORAGE_PASSWORD=long@pass!123
     logging:
       driver: gelf
       options:
@@ -232,12 +236,13 @@ services:
 
   image-server:
     container_name: images
-    # image: apsl/thumbor:6.4.2-simd-avx2
-    image: apsl/thumbor
+    image: minimalcompact/thumbor:6.7.0
     ports:
-      - 8000:8000
+      - 8000:80
     environment:
       - DETECTORS=['thumbor.detectors.face_detector','thumbor.detectors.feature_detector']
+      - THUMBOR_NUM_PROCESSES=3
+      - AUTO_WEBP=True
     volumes:
       - ./data/thumbor:/data
 
@@ -281,12 +286,17 @@ services:
 
   acc-database:
     container_name: accumulator-database
-    image: mongo:3.4.19-jessie
+    image: mongo:4.0.10
+    command: [--auth]
     ports:
       - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=hundurhundur
     volumes:
       - ./data/acc-mongo:/data/db
       - ./assets:/home
+      - ./assets/acc-database:/docker-entrypoint-initdb.d
 
   accumulator:
     container_name: accumulator
@@ -295,6 +305,10 @@ services:
       dockerfile: Dockerfile
     environment:
       - STORE_HOST=acc-database
+      - STORE_DB=althingi
+      - STORE_PORT=27017
+      - STORE_USER=wo
+      - STORE_PASSWORD=long@pass!123
       - QUEUE_HOST=queue
       - QUEUE_USER=admin
       - QUEUE_PASSWORD=Admin@123
@@ -364,4 +378,41 @@ services:
       - ./assets/queue/definitions.json:/etc/rabbitmq/definitions.json
 
 
+  ## Setup with a MySQL master (read/write) and a slave (read-only)
+  # database:
+  #   image: mysql:5.6.41
+  #   restart: always
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=example
+  #   depends_on:
+  #     - mysqlslave
+  #   ports:
+  #     - 4406:3306
+  #   expose:
+  #     - 4406
+  #   volumes:
+  #     - ./data/mysql-master:/var/lib/mysql/
+  #     - ./assets/database-master:/etc/mysql/conf.d
+  #     - ./logs/:/var/log/mysql
+  #     - ./server/assets/database/:/home
+  #     - ./server/auto/db/:/docker-entrypoint-initdb.d
+  # mysqlslave:
+  #   image: mysql:5.6.41
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=example
+  #   volumes:
+  #     - ./data/mysql-slave:/var/lib/mysql/
+  #     - ./assets/database-slave:/etc/mysql/conf.d/
+  # mysqlconfigure:
+  #   image: mysql:5.6.41
+  #   environment:
+  #     - "MYSQL_SLAVE_PASSWORD=example"
+  #     - "MYSQL_MASTER_PASSWORD=example"
+  #     - "MYSQL_ROOT_PASSWORD=example"
+  #     - "MYSQL_REPLICATION_USER=repl"
+  #     - "MYSQL_REPLICATION_PASSWORD=repl"
+  #   volumes:
+  #     - ./assets/database/mysql_connector.sh:/tmp/mysql_connector.sh
+  #   command: /bin/bash -x /tmp/mysql_connector.sh
 
