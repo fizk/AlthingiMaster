@@ -112,6 +112,11 @@ services:
       - 9300:9300
     volumes:
       - ./data/search-api/:/usr/share/elasticsearch/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   database:
     container_name: database
@@ -146,6 +151,11 @@ services:
     #   - 63791
     volumes:
       - ./data/cache-api:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   cache-consumer:
     container_name: cache-concumer
@@ -157,12 +167,22 @@ services:
     #   - 63792
     volumes:
       - ./data/cache-consumer:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   cache-provider:
     container_name: cache-provider
     image: redis:4.0.11
     volumes:
       - ./data/cache-provider:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   graphql:
     container_name: graphql
@@ -245,6 +265,11 @@ services:
       - AUTO_WEBP=True
     volumes:
       - ./data/thumbor:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   kibana:
     container_name: kibana
@@ -253,6 +278,11 @@ services:
       - elasticsearch
     ports:
       - '5601:5601'
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   logstash:
     container_name: logstash
@@ -266,6 +296,11 @@ services:
     depends_on:
       - kibana
       - elasticsearch
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   elasticsearch:
     container_name: elasticsearch
@@ -283,6 +318,11 @@ services:
       memlock:
         soft: -1
         hard: -1
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   acc-database:
     container_name: accumulator-database
@@ -297,6 +337,11 @@ services:
       - ./data/acc-mongo:/data/db
       - ./assets:/home
       - ./assets/acc-database:/docker-entrypoint-initdb.d
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   accumulator:
     container_name: accumulator
@@ -376,6 +421,11 @@ services:
       - 25672:25672
     volumes:
       - ./assets/queue/definitions.json:/etc/rabbitmq/definitions.json
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
 
   ## Setup with a MySQL master (read/write) and a slave (read-only)
