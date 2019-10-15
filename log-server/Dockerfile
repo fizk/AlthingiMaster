@@ -1,4 +1,4 @@
-FROM logstash:6.7.0
+FROM logstash:7.4.0
 
 # Remove default pipeline
 RUN rm -f /usr/share/logstash/pipeline/logstash.conf

@@ -21,7 +21,6 @@ Either `clone` each of the sub-system into their own directory and sim-link into
 root/
   ├── accumulator/ [simlink] or [git clone https://github.com/fizk/AlthingiAccumulator accumulator]
   ├── aggregator/ [simlink] or [git clone https://github.com/fizk/AlthingiAggregator aggregator]
-  ├── indexer/ [git clone https://github.com/fizk/AlthingiSearchIndexer indexer]
   ├── assets/
   ├── client/ [simlink] or [git clone https://github.com/fizk/AlthingiQL client]
   ├── data/
