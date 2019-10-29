@@ -85,7 +85,7 @@ services:
       - STORAGE_HOST=acc-database
       - STORAGE_DB=althingi
       - STORAGE_PORT=27017
-      - STORAGE_USER=ro
+      - STORAGE_USER=wo
       - STORAGE_PASSWORD=long@pass!123
     logging:
       driver: gelf

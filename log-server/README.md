@@ -56,7 +56,6 @@ PUT _template/template_aggregator?include_type_name=true
         "index.refresh_interval": "5s"
     },
     "index_patterns": "aggregator-*"
-
 }
 
 DELETE _template/template_mysql
@@ -217,7 +216,18 @@ PUT _template/template_apache?include_type_name=true
                         "ip": { "type": "ip" },
                         "location" : { "type" : "geo_point" },
                         "latitude" : { "type" : "half_float" },
-                        "longitude" : { "type" : "half_float" }
+                        "longitude" : { "type" : "half_float" },
+                        "city_name": { "type": "keyword" },
+                        "continent_code": { "type": "keyword" },
+                        "coordinates": { "type": "geo_point" },
+                        "country_code2": { "type": "keyword" },
+                        "country_code3": { "type": "keyword" },
+                        "country_name": { "type": "keyword" },
+                        "postal_code": { "type": "integer" },
+                        "region_code": { "type": "keyword" },
+                        "region_name": { "type": "keyword" },
+                        "dma_code: { "type": "integer" },
+                        "timezone": { "type": "keyword" }
                     }
                 },
                 "agent": {
@@ -295,51 +305,6 @@ PUT _template/template_api?include_type_name=true
         "index.refresh_interval": "5s"
     },
     "index_patterns": "api-*"
-}
-
-DELETE _template/template_indexer
-PUT _template/template_indexer?include_type_name=true
-{
-    "mappings": {
-        "doc": {
-            "properties": {
-                "@timestamp": {
-                    "type": "date"
-                },
-                "@version": {
-                    "type": "keyword"
-                },
-                "id": {
-                    "type": "text"
-                },
-                "result": {
-                    "type": "text"
-                },
-                "index": {
-                    "type": "text"
-                },
-                "warnings": {
-                    "type": "text"
-                },
-                "queue": {
-                    "type": "keyword"
-                },
-                "statusCode": {
-                    "type": "integer"
-                },
-                "msg": {
-                    "type": "text"
-                },
-                "time": {
-                    "type": "integer"
-                }
-            }
-        }
-    },
-    "settings": {
-        "index.refresh_interval": "5s"
-    },
-    "index_patterns": "indexer-*"
 }
 
 DELETE _template/template_aggregator

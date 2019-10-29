@@ -108,3 +108,10 @@ https://github.com/oprearocks/RabbitMQ-Docker-cluster
 https://www.youtube.com/watch?v=w2kGd2VRJWE
 https://mindbyte.nl/2018/04/05/run-rabbitmq-using-docker-compose-with-guest-user.html
 
+### MySQL
+```
+docker exec CONTAINER /usr/bin/mysqldump -u root --password=root DATABASE > backup.sql
+
+docker exec -i database sh -c 'exec mysql -uroot -pexample' < /root/dump.sql
+```
+
