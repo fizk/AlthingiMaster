@@ -356,4 +356,58 @@ PUT _template/template_aggregator?include_type_name=true
     }
     }
 }
+
+DELETE _template/template_forwarder
+PUT _template/template_forwarder?include_type_name=true
+{
+    "mappings": {
+        "doc": {
+            "properties": {
+                "@timestamp": {
+                    "type": "date"
+                },
+                "@version": {
+                    "type": "keyword"
+                },
+                "message": {
+                    "type": "text"
+                },
+                "referrer": {
+                    "type": "text"
+                },
+                "path": {
+                    "type": "text"
+                },
+                "agent": {
+                    "type": "text"
+                },
+                "exception": {
+                    "type": "keyword"
+                },
+                "stack": {
+                    "type": "text"
+                },
+                "UA": {
+                    "dynamic": true,
+                    "properties" : {
+                        "build": { "type": "text"},
+                        "device": { "type": "keyword"},
+                        "major": { "type": "integer"},
+                        "minor": { "type": "integer"},
+                        "name": { "type": "keyword"},
+                        "os": { "type": "keyword"},
+                        "os_major": { "type": "integer"},
+                        "os_minor": { "type": "integer"},
+                        "os_name": { "type": "keyword"},
+                        "patch": { "type": "integer"}
+                    }
+                }
+            }
+        }
+    },
+    "settings": {
+        "index.refresh_interval": "5s"
+    },
+    "index_patterns": "forwarder-*"
+}
 ```
