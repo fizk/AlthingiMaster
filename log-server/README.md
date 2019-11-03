@@ -310,50 +310,70 @@ PUT _template/template_api?include_type_name=true
 DELETE _template/template_aggregator
 PUT _template/template_aggregator?include_type_name=true
 {
-    "index_patterns" : "accumulator-*",
-    "settings" : {
-      "index" : {
-        "refresh_interval" : "5s"
-      }
-    },
-    "mappings" : {
-      "aggregator": {
-      "properties" : {
-        "path" : {
-          "type" : "text"
-        },
-        "@timestamp" : {
-          "type" : "date"
-        },
-        "code" : {
-          "type" : "integer"
-        },
-        "queue" : {
-          "type" : "keyword"
-        },
-        "level" : {
-          "type" : "integer"
-        },
-        "log_level" : {
-          "type" : "keyword"
-        },
-        "payload" : {
-          "type" : "text"
-        },
-        "@version" : {
-          "type" : "keyword"
-        },
-        "host" : {
-          "type" : "keyword"
-        },
-        "action" : {
-          "type" : "keyword"
-        },
-        "type" : {
-          "type" : "keyword"
+    "index_patterns": "accumulator-*",
+    "settings": {
+        "index": {
+            "refresh_interval": "5s"
         }
-      }
-    }
+    },
+    "mappings": {
+        "aggregator": {
+            "properties": {
+                "@timestamp": {
+                    "type": "date"
+                },
+                "@version": {
+                    "type": "keyword"
+                },
+                "host": {
+                    "type": "keyword"
+                },
+                "log_level": {
+                    "type": "keyword"
+                },
+                "queue": {
+                    "type": "keyword"
+                },
+                "message": {
+                    "type": "text"
+                },
+                "error_message": {
+                    "type": "text"
+                },
+                "reason": {
+                    "type": "keyword"
+                },
+                "controller": {
+                    "type": "keyword"
+                },
+                "action": {
+                    "type": "keyword"
+                },
+                "params": {
+                    "type": "flattened"
+                },
+                "elasticsearch": {
+                    "type": "flattened"
+                },
+                "tags": {
+                    "type": "keyword"
+                },
+                "content": {
+                    "type" : "object",
+                    "properties": {
+                        "id": {
+                            "type": "keyword"
+                        },
+                        "index": {
+                            "type": "keyword"  
+                        },
+                        "body": {
+                            "type": "flattened"
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -32,10 +32,3 @@ API_PAYLOAD (%{API_CATEGORIES:category} \[%{API_APPLOG}\])|(%{API_CATEGORIES:cat
 
 
 
-
-A_LEVEL (ALERT|ERROR|WARN|INFO|DEBUG)
-A_QUEUE [a-z\.-]*
-A_ACTION ([a-zA-Z]*\.[a-zA-Z]*)
-
-A_PATTERN (%{A_LEVEL:log_level}:(\(%{A_QUEUE:queue}\))?( %{A_ACTION:action})?%{GREEDYDATA:payload})
-
