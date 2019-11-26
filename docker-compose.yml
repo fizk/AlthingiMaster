@@ -51,8 +51,6 @@ services:
       - queue
       - accumulator
       - acc-database
-    ports:
-      - 8080:80
     expose:
       - 80
     environment:

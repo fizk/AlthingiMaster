@@ -110,7 +110,7 @@ https://mindbyte.nl/2018/04/05/run-rabbitmq-using-docker-compose-with-guest-user
 
 ### MySQL
 ```
-docker exec CONTAINER /usr/bin/mysqldump -u root --password=root DATABASE > backup.sql
+docker exec database /usr/bin/mysqldump -u root --password=example althingi > /root/backup.sql
 
 docker exec -i database sh -c 'exec mysql -uroot -pexample' < /root/dump.sql
 ```
