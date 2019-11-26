@@ -1,0 +1,141 @@
+DELETE _template/template_apache
+PUT _template/template_apache?include_type_name=true
+{
+    "mappings": {
+        "doc": {
+            "properties": {
+                "@timestamp": {
+                    "type": "date"
+                },
+                "@version": {
+                    "type": "keyword"
+                },
+                "auth": {
+                    "type": "text"
+                },
+                "bytes": {
+                    "type": "long"
+                },
+                "clientip": {
+                    "type": "text"
+                },
+                "httpversion": {
+                    "type": "text"
+                },
+                "ident": {
+                    "type": "text"
+                },
+                "message": {
+                    "type": "text"
+                },
+                "referrer": {
+                    "type": "text"
+                },
+                "request": {
+                    "type": "text"
+                },
+                "response": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "keyword"
+                },
+                "verb": {
+                    "type": "keyword"
+                },
+                "geoip": {
+                    "dynamic": true,
+                    "properties": {
+                        "ip": {
+                            "type": "ip"
+                        },
+                        "location": {
+                            "type": "geo_point"
+                        },
+                        "latitude": {
+                            "type": "half_float"
+                        },
+                        "longitude": {
+                            "type": "half_float"
+                        },
+                        "city_name": {
+                            "type": "keyword"
+                        },
+                        "continent_code": {
+                            "type": "keyword"
+                        },
+                        "coordinates": {
+                            "type": "geo_point"
+                        },
+                        "country_code2": {
+                            "type": "keyword"
+                        },
+                        "country_code3": {
+                            "type": "keyword"
+                        },
+                        "country_name": {
+                            "type": "keyword"
+                        },
+                        "postal_code": {
+                            "type": "integer"
+                        },
+                        "region_code": {
+                            "type": "keyword"
+                        },
+                        "region_name": {
+                            "type": "keyword"
+                        },
+                        "dma_code": {
+                            "type": "integer"
+                        },
+                        "timezone": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "agent": {
+                    "type": "text"
+                },
+                "UA": {
+                    "dynamic": true,
+                    "properties": {
+                        "build": {
+                            "type": "text"
+                        },
+                        "device": {
+                            "type": "keyword"
+                        },
+                        "major": {
+                            "type": "integer"
+                        },
+                        "minor": {
+                            "type": "integer"
+                        },
+                        "name": {
+                            "type": "keyword"
+                        },
+                        "os": {
+                            "type": "keyword"
+                        },
+                        "os_major": {
+                            "type": "integer"
+                        },
+                        "os_minor": {
+                            "type": "integer"
+                        },
+                        "os_name": {
+                            "type": "keyword"
+                        },
+                        "patch": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "settings": {
+        "index.refresh_interval": "5s"
+    },
+    "index_patterns": "apache-*"
+}

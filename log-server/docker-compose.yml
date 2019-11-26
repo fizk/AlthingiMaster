@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+
+  run:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./pipeline:/usr/share/logstash/pipeline
+      - ./logs:/usr/share/logstash/logs
+      - ./patterns:/etc/logstash/conf.d/patterns
+    ports:
+      - "12201:12201/udp"
+    command:  bash -c "/usr/share/logstash/bin/logstash --config.reload.automatic=true"

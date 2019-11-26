@@ -1,0 +1,69 @@
+DELETE _template/template_graphql
+PUT _template/template_graphql?include_type_name=true
+{
+    "mappings": {
+        "doc": {
+            "properties": {
+                "@timestamp": {
+                    "type": "date"
+                },
+                "@version": {
+                    "type": "keyword"
+                },
+                "requestTime": {
+                    "type": "double"
+                },
+                "cache": {
+                    "type": "keyword"
+                },
+                "request": {
+                    "type": "text"
+                },
+                "level": {
+                    "type": "keyword"
+                },
+                "payload": {
+                    "type": "text"
+                },
+                "host": {
+                    "type": "keyword"
+                },
+                "path": {
+                    "type": "text"
+                },
+                "cpu": {
+                    "dynamic": true,
+                    "properties": {
+                        "system": {
+                            "type": "long"
+                        },
+                        "user": {
+                            "type": "long"
+                        }
+                    }
+                },
+                "memory": {
+                    "dynamic": true,
+                    "properties": {
+                        "external": {
+                            "type": "long"
+                        },
+                        "heapTotal": {
+                            "type": "long"
+                        },
+                        "rss": {
+                            "type": "long"
+                        },
+                        "heapUsed": {
+                            "type": "long"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "settings": {
+        "index.refresh_interval": "5s"
+    },
+    "index_patterns": "graphql-*"
+}

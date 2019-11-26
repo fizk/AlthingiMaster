@@ -1,0 +1,96 @@
+DELETE _template/template_aggregator
+PUT _template/template_aggregator?include_type_name=true
+{
+    "mappings": {
+        "doc": {
+            "properties": {
+                "@timestamp": {
+                    "type": "date"
+                },
+                "container_id": {
+                    "type": "keyword"
+                },
+                "level": {
+                    "type": "integer"
+                },
+                "image_name": {
+                    "type": "keyword"
+                },
+                "created": {
+                    "type": "date"
+                },
+                "host": {
+                    "type": "keyword"
+                },
+                "container_name": {
+                    "type": "keyword"
+                },
+                "@version": {
+                    "type": "keyword"
+                },
+                "source_host": {
+                    "type": "keyword"
+                },
+                "image_id": {
+                    "type": "keyword"
+                },
+                "type": {
+                    "type": "keyword"
+                },
+                "version": {
+                    "type": "keyword"
+                },
+                "tag": {
+                    "type": "keyword"
+                },
+                "command": {
+                    "type": "text"
+                },
+                "time": {
+                    "type": "text"
+                },
+                "response": {
+                    "type": "keyword"
+                },
+                "message": {
+                    "type": "text"
+                },
+                "loglevel": {
+                    "type": "keyword"
+                },
+                "tags": {
+                    "type": "keyword"
+                },
+                "request": {
+                    "type": "text"
+                },
+                "category": {
+                    "type": "keyword"
+                },
+                "jsonmessage": {
+                    "type": "object",
+                    "dynamic": true
+                },
+                "jsonparams": {
+                    "type": "object",
+                    "dynamic": true
+                },
+                "memory_usage": {
+                    "type": "object",
+                    "properties": {
+                        "peak": {
+                            "type": "long"
+                        },
+                        "usage": {
+                            "type": "long"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "settings": {
+        "index.refresh_interval": "5s"
+    },
+    "index_patterns": "aggregator-*"
+}

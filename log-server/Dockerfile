@@ -1,13 +1,4 @@
-FROM logstash:7.4.0
-
-# Remove default pipeline
-RUN rm -f /usr/share/logstash/pipeline/logstash.conf
-
-# Add custom GROK patterns
-ADD ./patterns/custom-patterns /etc/logstash/conf.d/patterns/custom-patterns
-
-# Add new pipelines
-ADD ./pipelines/combined.conf /usr/share/logstash/pipeline/combined.conf
+FROM logstash:7.4.1
 
 # Installing Logstash plugins
 RUN logstash-plugin install logstash-filter-bytes
