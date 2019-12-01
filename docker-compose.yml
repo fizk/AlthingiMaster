@@ -88,6 +88,8 @@ services:
       - STORAGE_PORT=27017
       - STORAGE_USER=wo
       - STORAGE_PASSWORD=long@pass!123
+
+      - INDEXER_STALL_TIME=50000
     logging:
       driver: gelf
       options:

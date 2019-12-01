@@ -1,72 +1,72 @@
 DELETE _template/template_accumulator
 PUT _template/template_accumulator?include_type_name=true
 {
-"index_patterns": "accumulator-*",
-"mappings": {
-"aggregator": {
-"properties": {
-"@timestamp": {
-"type": "date"
-},
-"@version": {
-"type": "keyword"
-},
-"action": {
-"type": "keyword"
-},
-"content": {
-"properties": {
-"body": {
-"enabled": false,
-"type": "object"
-},
-"id": {
-"type": "keyword"
-},
-"index": {
-"type": "keyword"
+    "index_patterns": "accumulator-*",
+    "mappings": {
+        "aggregator": {
+            "properties": {
+                "@timestamp": {
+                    "type": "date"
+                },
+                "@version": {
+                    "type": "keyword"
+                },
+                "action": {
+                    "type": "keyword"
+                },
+                "content": {
+                    "properties": {
+                        "body": {
+                            "enabled": false,
+                            "type": "object"
+                        },
+                        "id": {
+                            "type": "keyword"
+                        },
+                        "index": {
+                            "type": "keyword"
+                        }
+                    },
+                    "type": "object"
+                },
+                "controller": {
+                    "type": "keyword"
+                },
+                "elasticsearch": {
+                    "enabled": false,
+                    "type": "object"
+                },
+                "error_message": {
+                    "type": "text"
+                },
+                "host": {
+                    "type": "keyword"
+                },
+                "log_level": {
+                    "type": "keyword"
+                },
+                "message": {
+                    "type": "text"
+                },
+                "params": {
+                    "enabled": false,
+                    "type": "object"
+                },
+                "queue": {
+                    "type": "keyword"
+                },
+                "reason": {
+                    "type": "keyword"
+                },
+                "tags": {
+                    "type": "keyword"
+                }
+            }
+        }
+    },
+    "settings": {
+    "index": {
+    "refresh_interval": "5s"
+    }
+    }
 }
-},
-"type": "object"
-},
-"controller": {
-"type": "keyword"
-},
-"elasticsearch": {
-"enabled": false,
-"type": "object"
-},
-"error_message": {
-"type": "text"
-},
-"host": {
-"type": "keyword"
-},
-"log_level": {
-"type": "keyword"
-},
-"message": {
-"type": "text"
-},
-"params": {
-"enabled": false,
-"type": "object"
-},
-"queue": {
-"type": "keyword"
-},
-"reason": {
-"type": "keyword"
-},
-"tags": {
-"type": "keyword"
-}
-}
-}
-},
-"settings": {
-"index": {
-"refresh_interval": "5s"
-}
-}
-}4
