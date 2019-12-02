@@ -1,5 +1,5 @@
 AGG_PATTERN \[%{TIMESTAMP_ISO8601:time}\] althingi-aggregator.%{LOGLEVEL:loglevel}: %{HTTP_RESPONSE_CODE:response} %{AGG_PAYLOAD} %{MEMORY}
-AGG_PAYLOAD \["%{AGG_CATEGORIES:category}","%{AGG_KEY:request}",((%{AGG_EMPTY})|(%{AGG_MSG}%{AGG_PARAMS}?))\]
+AGG_PAYLOAD \["%{AGG_CATEGORIES:category}","%{AGG_KEY:request}",((%{AGG_EMPTY})|(%{AGG_MSG},?%{GREEDYDATA:rawparams}?))\]
 AGG_EMPTY (?<rawmessage>(\[\])),(?<rawparams>(\[\]))
 AGG_MSG (?<rawmessage>(\[|{)(.*)?(\]|}))
 AGG_PARAMS ,"?(?<rawparams>(\[|{).*(\]|}))"?
