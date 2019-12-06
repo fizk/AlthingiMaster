@@ -119,3 +119,7 @@ data/*
 !data/.gitkeep
 logs/*
 !logs/.gitkeep
+static/*
+!static/.gitkeep
+cert/*
+!cert/.gitkeep

@@ -115,3 +115,5 @@ docker exec database /usr/bin/mysqldump -u root --password=example althingi > /r
 docker exec -i database sh -c 'exec mysql -uroot -pexample' < /root/dump.sql
 ```
 
+### SSL
+https://www.freecodecamp.org/news/how-to-get-https-working-on-your-local-development-environment-in-5-minutes-7af615770eec/
