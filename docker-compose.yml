@@ -194,14 +194,12 @@ services:
       - API_PROTOCOL=http
       - API_HOST=api
       - API_PORT=80
-      - IMAGE_SERVER=http://loggjafarthing.einarvalur.co:8000
+      - IMAGE_SERVER=/images
       - FORWARDER_SERVER=http://loggjafarthing.einarvalur.co:8008
       #- ASSETS_SERVER=http://static-server
     volumes:
       - ./client/@types:/usr/src/app/@types
       - ./client/src:/usr/src/app/src
-    ports:
-      - 3000:3000
     expose:
       - 3000
     depends_on:

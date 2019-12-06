@@ -116,4 +116,29 @@ docker exec -i database sh -c 'exec mysql -uroot -pexample' < /root/dump.sql
 ```
 
 ### SSL
-https://www.freecodecamp.org/news/how-to-get-https-working-on-your-local-development-environment-in-5-minutes-7af615770eec/
+
+
+To set up HTTPS in local development, follow this article https://www.freecodecamp.org/news/how-to-get-https-working-on-your-local-development-environment-in-5-minutes-7af615770eec/
+
+For production, this was run
+
+```
+certbot certonly --webroot -w /root/AlthingiMaster/static/ -d loggjafarthing.einarvalur.co
+```
+
+Because the httpd.conf file is set up to find the cert files in
+```
+SSLCertificateFile /usr/local/apache2/cert/server.crt
+SSLCertificateKeyFile /usr/local/apache2/cert/server.key
+SSLCertificateChainFile /usr/local/apache2/cert/server.chain
+```
+but certbot keeps it in a nother location, and because using simlinks in Docker is tricky, a post-hook in placed in
+`/etc/letsencrypt/renewal-hooks/post` that looks like this
+
+```bash
+#!/bin/bash
+
+cp /etc/letsencrypt/archive/loggjafarthing.einarvalur.co/chain1.pem /root/AlthingiMaster/cert/server.chain
+cp /etc/letsencrypt/archive/loggjafarthing.einarvalur.co/cert1.pem /root/AlthingiMaster/cert/server.crt
+cp /etc/letsencrypt/archive/loggjafarthing.einarvalur.co/privkey1.pem /root/AlthingiMaster/cert/server.key
+```
